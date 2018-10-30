@@ -276,11 +276,11 @@ h3$density = h3$counts/sum(h3$counts)*100
 pdf("/clusteruy/home/leandroz/Figuras/plot1.pdf", width=11.69, height=5)
 #pdf(file = "/home/lzipitria/plot1.pdf", width=11.69, height=5)
 par(mfrow=c(1,3))
-plot(h1,freq=FALSE, main = "All", ylim = c(0,50), xlim = c(0, 60),
+plot(h1,freq=FALSE, main = "All", ylim = c(0,60), xlim = c(0, 60),
      xlab = "Price Differences", ylab = "Relative Frequency", col = "gray71")
-plot(h2,freq=FALSE, main = "Within Cities (up to 30km)", ylim = c(0,50), xlim = c(0, 60),
+plot(h2,freq=FALSE, main = "Within Cities (up to 30km)", ylim = c(0,60), xlim = c(0, 60),
      xlab = "Price Differences", ylab = "Relative Frequency", col = "gray71")
-plot(h3,freq=FALSE, main = "Between Cities (up to 30 km)", ylim = c(0,50), xlim = c(0, 60),
+plot(h3,freq=FALSE, main = "Between Cities (up to 30 km)", ylim = c(0,60), xlim = c(0, 60),
      xlab = "Price Differences", ylab = "Relative Frequency", col = "gray71")
 dev.off()
 
@@ -298,11 +298,11 @@ h3 = hist(dfP[dfP$DComp == 0 & dfP$DVariety == 2,]$DifPrice)
 h3$density = h3$counts/sum(h3$counts)*100
 
 pdf("/clusteruy/home/leandroz/Figuras/plot3a.pdf", width=8, height=5) #revisar
-plot(h1,freq=FALSE, main = NULL, ylim = c(0,60), xlim = c(0, 50),
+plot(h1,freq=FALSE, main = NULL, ylim = c(0,70), xlim = c(0, 50),
      xlab = "Price Differences", ylab = "Relative Frequency", col = rgb(0.1,0.1,0.1,0.7))
-plot(h2,freq=FALSE,  ylim = c(0,50), xlim = c(0, 60),
+plot(h2,freq=FALSE,  ylim = c(0,70), xlim = c(0,50),
      xlab = "Price Differences", ylab = "Relative Frequency", col = rgb(0.85,0.85,0.85,0.7),  add=T)
-plot(h3,freq=FALSE,  ylim = c(0,50), xlim = c(0, 60),
+plot(h3,freq=FALSE,  ylim = c(0,70), xlim = c(0, 50),
      xlab = "Price Differences", ylab = "Relative Frequency", col = rgb(0.70,0.70,0.70,0.7),  add=T)
 # col = rgb(0,0,1,1/4)
 color <- c(col = rgb(0.1,0.1,0.1,0.7), col = rgb(0.85,0.85,0.85,0.7), col = rgb(0.70,0.70,0.70,0.7))
