@@ -1,4 +1,4 @@
-gc()
+unlink(".RData") 
 # load packages
 library("lfe", lib.loc = .libPaths('/clusteruy/home/leandroz/R/lib')) ## ClusterUy
 
