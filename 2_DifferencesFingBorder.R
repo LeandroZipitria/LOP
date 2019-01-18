@@ -12,6 +12,7 @@ library("dplyr", lib.loc = .libPaths('/clusteruy/home/leandroz/R/lib')) ## Clust
 
 # load database
 #dbf <- fread("~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2018.New/2018BaseResiduals.csv", data.table = F)
+#dbf <- get(load("~/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/2018BaseResiduals.Rdata")) #ClusterUy
 dbf <- readRDS("/clusteruy/home/leandroz/Bases/Convergence/2018BaseResiduals.rds") #ClusterUy
 head(dbf)
 
@@ -29,12 +30,14 @@ dbf$Super <- formatC(dbf$Super, width=3, flag="0") # fix 3 numbers
 dbf$chain.number <- formatC(dbf$chain.number, width=2, flag="0") # fix 2 numbers
 dbf$city.number <- formatC(dbf$city.number, width=2, flag="0") # fix 2 numbers
 dbf$depto.number <- formatC(dbf$depto.number, width=2, flag="0") # fix 2 numbers
+dbf$competition <- formatC(dbf$competition, width=1, flag="0") # fix 1 numbers
+dbf$variety <- formatC(dbf$variety, width=1, flag="0") # fix 1 numbers
 #dbf$Time <- as.factor(dbf$Time)
 
 
 ### Create empty database for price differences
 df <- matrix(0,0,11)
-colnames(df) <- c("Time", "Product", "DifPrice", "DComp", "DVariety", 
+colnames(df) <- c("Time", "Product", "DifPrice", "Competition", "Variety", 
                  "DX_UTM", "DY_UTM", "Chain", "Super", "City", "Dpto")
 
 ## Now create a table with price differences and then stack them and add to 
@@ -53,16 +56,14 @@ for(i in unique(dbf$Product)) {
       p[upper.tri(p)] <- NA # prices of the uper and lower matrix are repeated (deleted)
       p = abs(p) # get absolute value of price differences
       
-      comp = t(outer(sub[,5], sub[,5], `-`)) # competition difference
+      comp = t(outer(sub[,5], sub[,5], `paste`)) # competition difference
       diag(comp) = NA
       comp[upper.tri(comp)] <- NA
-      comp = abs(comp) # get absolute value of competition
-      
-      var = t(outer(sub[,6], sub[,6], `-`)) # variety difference
+     
+      var = t(outer(sub[,6], sub[,6], `paste`)) # variety difference
       diag(var) = NA
       var[upper.tri(var)] <- NA
-      var = abs(var) # get absolute value of variety
-      
+
       xutm = t(outer(sub[,10], sub[,10], `-`)) # X_UTM differences
       diag(xutm) = NA
       xutm[upper.tri(xutm)] <- NA
@@ -100,7 +101,7 @@ for(i in unique(dbf$Product)) {
       h9= cbind(c(dep))
       h10 = cbind(j, i, h1, h2, h3, h4, h5, h6, h7, h8, h9)
       df <- rbind(df, h10)
-
+      
       df <- na.omit(df) # Delete prices with value NA
   }
   print(paste0("Ended Product ", i))
@@ -114,13 +115,17 @@ gc()
 ## Erase auxiliary info
 rm(i,j,h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, p, comp, var, chain, 
    xutm, yutm, sup, dep, cit, sub)
+
 gc()
 
 # Create a data frame
 dfP <- as.data.frame(df) # Transform the vector into a data.frame
 rm(df)
 dim(dfP)
+
 gc()
+
+#save(dfP, file = "/clusteruy/home/leandroz/Bases/Border/2018_PriceDiffBorderPrueba.Rdata")
 
 ###############################################################
 ##### PART 2 - CALCULATE DISTANCE AND CREATE OTHER DUMMIES ####
@@ -128,6 +133,7 @@ gc()
 dfP$DifPrice <- as.numeric(as.character(dfP$DifPrice))
 dfP$DX_UTM <- as.numeric(as.character(dfP$DX_UTM))
 dfP$DY_UTM <- as.numeric(as.character(dfP$DY_UTM))
+
 gc()
 
 dfP$Distance <- log(1+(sqrt(dfP$DX_UTM + dfP$DY_UTM)/1000))
@@ -141,21 +147,33 @@ dfP$SuperL <- substr(dfP$Super, 1,3)
 dfP$SuperR <- substr(dfP$Super, 5,7)
 dfP$DptoL <- substr(dfP$Dpto, 1,2)
 dfP$DptoR <- substr(dfP$Dpto, 4,5)
+dfP$CompL <- as.numeric(as.character(substr(dfP$Competition, 1,1)))
+dfP$CompR <- as.numeric(as.character(substr(dfP$Competition, 3,3)))
+dfP$VarL <- as.numeric(as.character(substr(dfP$Variety, 1,1)))
+dfP$VarR <- as.numeric(as.character(substr(dfP$Variety, 3,3)))
 
-dfP$Dpto <- dfP$City <- dfP$Chain <- dfP$Super <- NULL
 gc()
+
+# Competition and variety differences and minimum
+dfP$DComp <- abs(dfP$CompL - dfP$CompR)
+dfP <- transform(dfP, MinComp = pmin(CompL, CompR))
+
+dfP$DVar <- abs(dfP$CompL - dfP$CompR)
+dfP <- transform(dfP, MinVar = pmin(VarL, VarR))
+
+gc()
+
+dfP$Dpto <- dfP$City <- dfP$Chain <- dfP$Super <- dfP$Competition <- dfP$Variety <- NULL
 
 dfP$DifCity <- ifelse(dfP$CityL != dfP$CityR, 1, 0)
 
 dim(dfP)
+str(dfP)
 
 ## Save database
-saveRDS(dfP, file = "/clusteruy/home/leandroz/Bases/Border/2018_PriceDiff.rds")
+saveRDS(dfP, file = "/clusteruy/home/leandroz/Bases/Border/2018_PriceDiffBorder.rds")
 #write.csv(dfP, "/home/leandroz/Bases/Convergence/2018BaseDiff.csv", row.names = FALSE)
 
 ## Done
 #########################################################
 
-## Call next script
-
-source("/clusteruy/home/leandroz/3_TablesFigures.R")
