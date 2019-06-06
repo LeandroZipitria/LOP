@@ -8,93 +8,99 @@ gc() #erase garbage
 # dbf original database
 # dfP price difference database
 
+library("data.table", lib.loc = .libPaths('/clusteruy/home/leandroz/R/lib')) ## ClusterUy
+#library(data.table)
 
 ### Load databases
 
-dbf <-  get(load("/clusteruy/home/leandroz/Bases/Convergence/2018BaseResiduals.Rdata")) #ClusterUy
-dfP <-  get(load("/clusteruy/home/leandroz/Bases/Border/2018_PriceDiff.Rdata")) #ClusterUy
+dbf <-  readRDS("/clusteruy/home/leandroz/Bases/Convergence/2018BaseResiduals.rds") #ClusterUy
+dfP <-  readRDS("/clusteruy/home/leandroz/Bases/Border/2018_PriceDiff.rds") #ClusterUy
+#dbf <- readRDS("~/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/Viejas/2018BaseResiduals.rds")
+#dfP <- readRDS("~/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/less200metters.rds")
+dbf <- readRDS("c://Users/leandro/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/Viejas/2018BaseResiduals.rds")
+dfP <- readRDS("c://Users/leandro/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/less200metters.rds")
 
 dim(dfP)
 dim(dbf)
 
 ################################################
-#############  Tabla 1 (antes 2) ###############
+#############  Table 1 (antes 2) ###############
 
 
-#### Original database ####
+#### ------ Original Price Database ------------
+
+## Number of observations by products, fivenums, sd, sample start, and number of supermarkets
+dbf$origMode <- exp(dbf$moda / 100) # for speeding calculations
+# Five numbers
+fiveN <- setDT(dbf)[, fivenum(origMode), (Product)] # five numbers
+fiveN$vars <- rep(c("Minimum", "notU", "Median", "notU2", "Maximum"), len = nrow(fiveN))
+fiveN <- dcast(data=fiveN, formula = Product ~ vars, value.var = "V1")
+fiveN$notU <- fiveN$notU2 <- NULL
+# Number of observations by product
+nobs <-  setDT(dbf)[, .N, by = Product] # number of observations
+# Standard deviatin
+estd <- setDT(dbf)[, sd(origMode), (Product)] # standard deviations
+setnames(estd, old = "V1", new = "Standard-Deviation")
+# Number of supermarkets
+nsup <- length(unique(dbf$Super))
+sup <- setDT(dbf)[,length(unique(Super))/nsup*100, (Product)]  # maximum number of supermarkets by product
+setnames(sup, old = "V1", new = "Share-stores")
+# Start date for each product
+sstart <- setDT(dbf)[,min(Time), (Product)]
+setnames(sstart, old = "V1", new = "TStart")
+# merge all information into one database (fiveN, nobs, sup, estd, sstart)
+info <- merge(merge(merge(merge(fiveN, nobs, by = "Product"), estd, by = "Product"), sstart, by ="Product"), sup, by="Product")
+info <- info[,c("Product","Minimum", "Median","Maximum","Standard-Deviation", "N", "Share-stores", "TStart")]
+write.csv(info, "/clusteruy/home/leandroz/Bases/Convergence/InfoOriginDatabase.csv", row.names = F)
+# Delete and erase garbage
+rm (fiveN,nobs,estd,info,sstart,sup,nsup)
+gc()
+
+
+
+#### ------- Price difference database ----------
 
 ## Number of observations by products, fivenums & sd
-
-numb <- by(exp(dbf$moda / 100), dbf$Product, length) # Numeber of observations by product
-five1 <- by(exp(dbf$moda / 100), dbf$Product, fivenum) # fivenums
-sd1 <- by(exp(dbf$moda / 100), dbf$Product, sd) # sd
-
-sink("salida1.txt", append = T)
-print("### Number of observations ###")
-print(numb, include.rownames=F)
-print("### Five numbers ###")
-print(five1, include.rownames=F)
-print("### Standard deviation ###")
-print(sd1, include.rownames=F)
-sink()
-
-rm (numb, five1, sd1)
-gc()
-
-## Sample start
-
-start <- by(dbf$Time, dbf$Product, min) # Numeber of observations by product
-sink("salida1.txt", append = T)
-print("### Sample start ###")
-print(start, include.rownames=F)
-sink()
-gc()
-
-## Number of supermarkets
-
-sup <- by(dbf$Super, dbf$Product, unique)# / 386 * 100) ## share of supermarkets by products 
-
-
-sink("salida1.txt", append = T)
-print("### Number of supers by product ###")
-sink()
-
-
-
-#### Price difference database ####
-
-## Number of observations by products, fivenums & sd
-
-numb <- by(dfP$DifPrice, dfP$Product, length) # Numeber of observations by product
-five1 <- by(dfP$DifPrice, dfP$Product, fivenum) # fivenums
-sd1 <- by(dfP$DifPrice, dfP$Product, sd) # sd 
-
-sink("salida1.txt", append = T)
-print("### Number of observations: price difference ###")
-print(numb, include.rownames=F)
-print("### Five numbers: price difference ###")
-print(five1, include.rownames=F)
-print("### Standard deviation: price difference ###")
-print(sd1, include.rownames=F)
-sink()
-
-rm (numb, five1, sd1)
-gc()
-
-## Number of zeroes in price diff database
-
+# Five numbers
+fiveN <- setDT(dfP)[, fivenum(DifPrice), (Product)] # five numbers
+fiveN$vars <- rep(c("Minimum", "notU", "Median", "notU2", "Maximum"), len = nrow(fiveN))
+fiveN <- dcast(data=fiveN, formula = Product ~ vars, value.var = "V1")
+fiveN$notU <- fiveN$notU2 <- NULL
+# Number of observations by product
+nobs <-  setDT(dfP)[, .N, by = Product] # number of observations
+# Standard deviatin
+estd <- setDT(dfP)[, sd(DifPrice), (Product)] # standard deviations
+setnames(estd, old = "V1", new = "Standard-Deviation")
+# Number of exact zeroes
 h1 = function (x) (length(which(x == 0))/(length(x))*100) ## Total equal zero
-z1 <- tapply(dfP$DifPrice, dfP$Product, h1)
-
-sink("salida1.txt", append = T)
-print("### Number of zeros: price difference ###")
-print(z1, include.rownames=F)
-sink()
+z1 <- setDT(dfP)[, h1(DifPrice), (Product)]
+setnames(z1, old = "V1", new = "Exact-zeroes") 
+# merge all information into one database (fiveN, nobs, estd, z1)
+info <- merge(merge(merge(fiveN, nobs, by = "Product"), estd, by = "Product"), z1, by ="Product")
+info <- info[,c("Product","Minimum", "Median","Maximum","Standard-Deviation", "N", "Exact-zeroes")]
+write.csv(info, "/clusteruy/home/leandroz/Bases/Convergence/InfoPriceDiff.csv", row.names = F)
+# Erase information and collect garbage
+rm (nobs,fiveN,estd,z1,info)
 gc()
 
 
-################################################ 
-#############  Tabla 3 (antes 4) ###############
+
+############################################## 
+#------------  Tables 3 and 4-----------------
+
+## Cross tabulation
+
+cross1 <- table(dbf$competition, dbf$variety) #   el primero es fila, segundo columna
+cross2 <- table(dfP$Dcomp, dfP$DVariety) #  el primero es fila, segundo columna
+prop.table(aa)*100
+
+sink("salidaV40-2019.txt", append = T)
+print("---------------Cross Tab: original database -----------------")
+print(prop.table(cross1)*100, include.rownames=F)
+print("---------------Cross Tab: Price difference database -----------------")
+print(prop.table(cross2)*100, include.rownames=F)
+sink()
+gc()
 
 
 ## Number of observations, fivenums & sd
@@ -104,7 +110,7 @@ five1 <- fivenum(dfP$DifPrice) # fivenums
 sd1 <- sd(dfP$DifPrice) # sd
 zros = length(which(dfP$DifPrice == 0))/(length(dfP$DifPrice))*100 ## Total equal zero
 
-sink("salidaV36.txt", append = T)
+sink("salidaV40-2019.txt", append = T)
 print("---------------TOTAL-----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
@@ -122,7 +128,7 @@ sd1 <- sd(dfP[dfP$DifCity == 1,]$DifPrice) # sd
 zros = length(which(dfP[dfP$DifCity == 1,]$DifPrice == 0))/
   (length(dfP[dfP$DifCity == 1,]$DifPrice))*100 # Between cities 
 
-sink("salidaV36.txt", append = T)
+sink("salidaV40-2019.txt", append = T)
 print("---------------Between cities----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
@@ -138,7 +144,7 @@ sd1 <- sd(dfP[dfP$DifCity == 0,]$DifPrice) # sd
 zros = length(which(dfP[dfP$DifCity == 0,]$DifPrice == 0))/
   (length(dfP[dfP$DifCity == 0,]$DifPrice))*100 # Within cities
 
-sink("salidaV36.txt", append = T)
+sink("salidaV40-2019.txt", append = T)
 print("---------------Within cities----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
@@ -154,7 +160,7 @@ sd1 <- sd(dfP[dfP$CityL == 30 & dfP$CityR == 30,]$DifPrice) # sd
 zros = length(which(dfP[dfP$CityL == 30 & dfP$CityR == 30,]$DifPrice == 0))/
   (length(dfP[dfP$CityL == 30 & dfP$CityR == 30,]$DifPrice))*100 # Within cities
 
-sink("salidaV36.txt", append = T)
+sink("salidaV40-2019.txt", append = T)
 print("---------------Within Montevideo----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
@@ -170,7 +176,7 @@ sd1 <- sd(dfP[dfP$CityL != 30 & dfP$CityR != 30,]$DifPrice) # sd
 zros = length(which(dfP[dfP$CityL != 30 & dfP$CityR != 30,]$DifPrice == 0))/
   (length(dfP[dfP$CityL != 30 & dfP$CityR != 30,]$DifPrice))*100 # Within cities
 
-sink("salidaV36.txt", append = T)
+sink("salidaV40-2019.txt", append = T)
 print("---------------Excluded Montevideo----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
@@ -187,7 +193,7 @@ sd1 <- sd(dfP[dfP$MontOthers == 1 & dfP$DifCity == 1,]$DifPrice) # sd
 zros = length(which(dfP[dfP$MontOthers == 1 & dfP$DifCity == 1,]$DifPrice == 0))/
   (length(dfP[dfP$MontOthers == 1 & dfP$DifCity == 1,]$DifPrice))*100 # Within cities
 
-sink("salidaV36.txt", append = T)
+sink("salidaV40-2019.txt", append = T)
 print("--------------- Montevideo - Others----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
@@ -208,7 +214,7 @@ for (c in unique(dfP$DComp))
   zros = length(which(dfP[dfP$DComp == c,]$DifPrice == 0))/
     (length(dfP[dfP$DComp == c,]$DifPrice))*100 # 
   
-  sink("salidaV36.txt", append = T)
+  sink("salidaV40-2019.txt", append = T)
   print(paste0("--------------- Diff Competition = ", c, "------------"))
   print(numb, include.rownames=F)
   print(five1, include.rownames=F)
@@ -227,7 +233,7 @@ for (c in unique(dfP$DVariety))
   zros = length(which(dfP[dfP$DVariety == c,]$DifPrice == 0))/
     (length(dfP[dfP$DVariety == c,]$DifPrice))*100 # 
   
-  sink("salidaV36.txt", append = T)
+  sink("salidaV40-2019.txt", append = T)
   print(paste0("--------------- Diff Variety = ", c, "------------"))
   print(numb, include.rownames=F)
   print(five1, include.rownames=F)
@@ -261,6 +267,7 @@ plot(h2,freq=FALSE, main = "Within Cities", ylim = c(0,15),
 plot(h3,freq=FALSE, main = "Between Cities", ylim = c(0,20),
      xlab = "Kilometers", ylab = "Relative Frequency", col = "gray71")
 dev.off()
+
 
 
 ################################################
@@ -309,7 +316,3 @@ plot(h3,freq=FALSE, main = "Two Varieties",  ylim = c(0,70), xlim = c(0, 50),
 # col = rgb(0,0,1,1/4)
 dev.off()
 
-
-## Call next script
-
-source("/clusteruy/home/leandroz/4_Regressions.R")
