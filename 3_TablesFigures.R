@@ -17,8 +17,8 @@ dbf <-  readRDS("/clusteruy/home/leandroz/Bases/Convergence/2018BaseResiduals.rd
 dfP <-  readRDS("/clusteruy/home/leandroz/Bases/Border/2018_PriceDiff.rds") #ClusterUy
 #dbf <- readRDS("~/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/Viejas/2018BaseResiduals.rds")
 #dfP <- readRDS("~/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/less200metters.rds")
-dbf <- readRDS("c://Users/leandro/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/Viejas/2018BaseResiduals.rds")
-dfP <- readRDS("c://Users/leandro/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/less200metters.rds")
+#dbf <- readRDS("c://Users/leandro/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/Viejas/2018BaseResiduals.rds")
+#dfP <- readRDS("c://Users/leandro/Dropbox/Docs/Investigacion/2018.Price convergence/Bases/less200metters.rds")
 
 dim(dfP)
 dim(dbf)
@@ -305,7 +305,7 @@ h2$density = h2$counts/sum(h2$counts)*100
 h3 = hist(dfP[dfP$DComp == 0 & dfP$DVariety == 2,]$DifPrice)
 h3$density = h3$counts/sum(h3$counts)*100
 
-pdf("/clusteruy/home/leandroz/Figuras/plot3a.pdf", width=8, height=5) #revisar
+pdf("/clusteruy/home/leandroz/Figuras/plot3.pdf", width=8, height=5) #revisar
 par(mfrow=c(1,3))
 plot(h1,freq=FALSE, main = "Same Varieties", ylim = c(0,70), xlim = c(0, 50),
      xlab = "Price Differences", ylab = "Relative Frequency", col = "gray71")
