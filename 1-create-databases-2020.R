@@ -63,7 +63,6 @@ dbase$Used <- NULL
 dbase$Variety <- 0
 dbase$Variety <- with(dbase, ave(Product, Category, Time, Super, FUN= length)) - 1
 
-
 #### Add common supermarket information -------------
 
 ## Load database
@@ -71,7 +70,7 @@ supers <- read.csv("~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases
 supers <- read.csv("C:/Users/leandro/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/Establecimientos.csv") #windows
 head(supers)
 
-supers <- supers[, c("Super", "chain.number", "city.number", "X_UTM", "Y_UTM","ccz")] ## the information needed to merge
+supers <- supers[, c("Super", "chain.number", "city.number", "depto.number", "X_UTM", "Y_UTM","ccz")] ## the information needed to merge
 
 # Database information (products) --
 # Super: store id number identifier

@@ -37,7 +37,8 @@ for(i in 1:n) {
   dbase$Instrument[i] <- mean(test$Variety)
 }
 
-saveRDS(dbase, file = "~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.rds")
+# save database
+write.csv(dbase, "~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.csv", row.names = FALSE)
 
 
 ## Call next script
