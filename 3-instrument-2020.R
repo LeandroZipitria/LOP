@@ -42,6 +42,6 @@ write.csv(dbase, "~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2
 
 
 ## Call next script
-source("/path/to/file/3-figures-tables-2020.R")
+source("/path/to/file/4-tables-figures-2020.R")
 
 #### End of script ---------------------------------------
