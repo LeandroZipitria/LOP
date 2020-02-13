@@ -136,6 +136,26 @@ dfP$DifCity <- ifelse(dfP$CityL != dfP$CityR, 1, 0)
 
 dim(dfP)
 
+### Transform variables using as.factor()
+dfP$SameChain <- ifelse(dfP$ChainR == dfP$ChainL, 1,0)
+dfP$Product <- as.factor(dfP$Product)
+### Transfrom from character to numeric
+dfP$CityL <- as.numeric(as.character(dfP$CityL))
+dfP$CityR <- as.numeric(as.character(dfP$CityR))
+dfP$DptoL <- as.numeric(as.character(dfP$DptoL))
+dfP$DptoR <- as.numeric(as.character(dfP$DptoR))
+dfP$ChainL <- as.numeric(as.character(dfP$ChainL))
+dfP$ChainR <- as.numeric(as.character(dfP$ChainR))
+dfP$SuperL <- as.numeric(as.character(dfP$SuperL))
+dfP$SuperR <- as.numeric(as.character(dfP$SuperR))
+
+dfP$CityL <- as.factor(dfP$CityL)
+dfP$CityR <- as.factor(dfP$CityR)
+dfP$ChainL <- as.factor(dfP$ChainL)
+dfP$ChainR <- as.factor(dfP$ChainR)
+dfP$SuperL <- as.factor(dfP$SuperL)
+dfP$SuperR <- as.factor(dfP$SuperR)
+
 ## Save database
 saveRDS(dfP, file = "/clusteruy/home/leandroz/Bases/Border/2018_PriceDiff.rds")
 
