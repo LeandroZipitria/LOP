@@ -16,3 +16,10 @@ The first four files create the databases (in levels and differences) and are ne
 0-D-add-instrument-pdiff-database.R: add the instrument for the price difference database.
 
 --------------------- 
+
+## Tables and estimations
+
+1-tables-figures-2020.R: create all tables and figures. \
+2-regressions-2020.R: run all regressions.
+
+---------------------
