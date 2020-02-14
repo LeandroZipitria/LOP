@@ -35,7 +35,7 @@ dfP$DInst <- abs(dfP$InstR - dfP$InstL)
 dfP <- dfP[ , -which(names(dfP) %in% c("InstR","InstL"))]
 head(dfP)
 str(dfP)
-saveRDS(dfP, "/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff-inst.rds")
+saveRDS(dfP, "/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff.rds")
 
 
 # Create random database 10%
