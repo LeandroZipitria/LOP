@@ -56,3 +56,7 @@ dfP3 <- dfP[dfP$Time %in% y2011,]
 saveRDS(dfP3, "/clusteruy/home/leandroz/Bases/Border/df2011-inst-2020.rds")
 rm(dfP3)
 
+#### All databases created ------------------------------------------
+
+### End script ------------------------------------------------------
+

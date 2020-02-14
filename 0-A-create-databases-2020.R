@@ -113,6 +113,6 @@ write.csv(dbase, "~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2
 
 ### Start next script ----------------
 
-source("/path/to/file/2-difference-database-2020.R")
+source("/path/to/file/0-B-difference-database-2020.R")
 
 #### End of script ---------------------------------------
