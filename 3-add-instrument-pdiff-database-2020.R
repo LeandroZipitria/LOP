@@ -12,7 +12,7 @@ dfP <-  readRDS("/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff.rds") #Clu
 str(dfP)
 
 # Merge instrument
-dfPinst <-  fread("/clusteruy/home/leandroz/Bases/Border/2020-dbase-levels-final", data.table = F)
+dfPinst <-  fread("/clusteruy/home/leandroz/Bases/Border/2020-dbase-levels-final.csv", data.table = F)
 dfPinst <- dfPinst[,c("Super","Product","Time","Instrument")]
 dfP$SuperL <- as.numeric(as.character(dfP$SuperL))
 dfP$SuperR <- as.numeric(as.character(dfP$SuperR))
@@ -31,11 +31,14 @@ sink()
 sum(is.na(dfP$InstL))
 sum(is.na(dfP$InstR))
 
+head(dfP)
 dfP$DInst <- abs(dfP$InstR - dfP$InstL)
-dfP <- dfP[ , -which(names(dfP) %in% c("InstR","InstL"))]
+dfP <- dfP[,c("Time","Product","DifPrice","DVar","Distance","CityL","CityR",
+              "ChainL","ChainR","SuperL","SuperR","DifCity","SameChain","DInst")]
+
 head(dfP)
 str(dfP)
-saveRDS(dfP, "/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff.rds")
+saveRDS(dfP, "/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff-final.rds")
 
 
 # Create random database 10%
