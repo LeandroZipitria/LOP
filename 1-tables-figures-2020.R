@@ -27,20 +27,20 @@ gc()
 
 # share of varieties in price database
 a <- (table(dbf$Variety)) / (nrow(dbf)) * 100
-a
 sink("salidaV41-2020.txt", append = T)
 print("---------------------------- Table 1 --------------------------------")
+print("")
 print("--------------- share of varieties in price database ----------------")
-print(a)
+print(a,include.rownames=F)
+print("")
 sink()
 
 # share of varieties in price difference database
 a <- (table(dfP$DVar)) / (nrow(dfP)) * 100
-a
 sink("salidaV41-2020.txt", append = T)
-print("------------------------------- Table 1 ----------------------------------------")
 print("--------------- share of varieties in price difference database ----------------")
-print(a)
+print(a,include.rownames=F)
+print("")
 sink()
 
 gc()
@@ -55,10 +55,12 @@ c <- max(exp(dfP$Distance-1))
 
 sink("salidaV41-2020.txt", append = T)
 print("---------------------------- Table 2 --------------------------------")
+print("")
 print("--------------- TOTAL ----------------")
-print(a)
-print(b)
-print(c)
+print(a,include.rownames=F)
+print(b,include.rownames=F)
+print(c,include.rownames=F)
+print("")
 sink()
 
 # Within cities (column 2)
@@ -67,11 +69,11 @@ b <- median(dfP[dfP$DifCity ==0,]$Distance)
 c <- max(dfP[dfP$DifCity ==0,]$Distance)
 
 sink("salidaV41-2020.txt", append = T)
-print("---------------------------- Table 2 --------------------------------")
 print("--------------- Within city ----------------")
-print(a)
-print(b)
-print(c)
+print(a,include.rownames=F)
+print(b,include.rownames=F)
+print(c,include.rownames=F)
+print("")
 sink()
 
 # Between cities (column 3)
@@ -80,11 +82,11 @@ b <- median(dfP[dfP$DifCity ==1,]$Distance)
 c <- max(dfP[dfP$DifCity ==1,]$Distance)
 
 sink("salidaV41-2020.txt", append = T)
-print("---------------------------- Table 2 --------------------------------")
 print("--------------- Between city ----------------")
-print(a)
-print(b)
-print(c)
+print(a,include.rownames=F)
+print(b,include.rownames=F)
+print(c,include.rownames=F)
+print("")
 sink()
 
 gc()
@@ -101,11 +103,13 @@ zros = length(which(dfP$DifPrice == 0))/
 
 sink("salidaV41-2020.txt", append = T)
 print("---------------------------- Table 3 --------------------------------")
+print("")
 print("---------------Total----------------")
 print(numb, include.rownames=F)
 print(five1, include.rownames=F)
 print(sd1, include.rownames=F)
 print(zros, include.rownames=F)
+print("")
 sink()
 gc()
 
@@ -123,6 +127,7 @@ print(numb, include.rownames=F)
 print(five1, include.rownames=F)
 print(sd1, include.rownames=F)
 print(zros, include.rownames=F)
+print("")
 sink()
 gc()
 
@@ -139,6 +144,7 @@ print(numb, include.rownames=F)
 print(five1, include.rownames=F)
 print(sd1, include.rownames=F)
 print(zros, include.rownames=F)
+print("")
 sink()
 gc()
 
@@ -160,6 +166,7 @@ for (c in val)
   print(five1, include.rownames=F)
   print(sd1, include.rownames=F)
   print(zros, include.rownames=F)
+  print("")
   sink()
   gc()
 }
@@ -258,19 +265,17 @@ gc()
 ## --------- Figure 1 (motivation) ---------
 
 dfP2 <- dfP[dfP$Distance < log(2)]
-saveRDS(dfP2, "/clusteruy/home/leandroz/Bases/Border/Less01km-2020.rds")
-
+#saveRDS(dfP2, "/clusteruy/home/leandroz/Bases/Border/Less01km-2020.rds")
 
 x= 1
-h1 = hist(dfP2[dfP2$DVariety == 0,]$DifPrice, breaks = 
+h1 = hist(dfP2[dfP2$DVar == 0,]$DifPrice, breaks = 
             seq(0,200, by = x))
 h1$density = h1$counts/sum(h1$counts)*100
-h2 = hist(dfP2[dfP2$DVariety == 1,]$DifPrice, breaks = 
+h2 = hist(dfP2[dfP2$DVar == 1,]$DifPrice, breaks = 
             seq(0,200, by = x))
 h2$density = h2$counts/sum(h2$counts)*100
 
 dev.off()
-#♠par(mar=c(0,6,4,2)+0.1)
 pdf("/clusteruy/home/leandroz/Figuras/plot3.pdf", width=8, height=5) 
 opar <- par(lwd=1.8)
 plot(h1,freq=FALSE, main = "Same Varieties (grey) vs. One Variety Difference (white)", ylim = c(0,40), xlim = c(0,40), 
