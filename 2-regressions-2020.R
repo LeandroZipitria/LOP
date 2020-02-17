@@ -28,7 +28,7 @@ reg1 <- felm(moda ~ Variety
 sink("regressions-2020.txt", append = T)
 print("---------- Price equation (factor*time + store*time) -----------")
 print(summary(reg1), include.rownames=F)
-print(reg1$N)
+print(reg1$N, include.rownames=F)
 sink()
 gc()
 
@@ -40,7 +40,7 @@ reg1 <- felm(moda ~ Variety
 sink("regressions-2020.txt", append = T)
 print("---------- Price equation (factor*time + store*time + store*product) -----------")
 print(summary(reg1), include.rownames=F)
-print(reg1$N)
+print(reg1$N, include.rownames=F)
 sink()
 gc()
 
@@ -64,7 +64,7 @@ regression <- function(x) {
   sink("regressions-2020.txt", append = T)
   print("---------- First column -----------")
   print(reg1, include.rownames=F)
-  print(reg1$N)
+  print(reg1$N, include.rownames=F)
   sink()
   rm(reg1)
   gc()
@@ -75,7 +75,7 @@ regression <- function(x) {
   sink("regressions-2020.txt", append = T)
   print("---------- Second column -----------")
   print(reg1, include.rownames=F)
-  print(reg1$N)
+  print(reg1$N, include.rownames=F)
   sink()
   rm(reg1)
   gc()
@@ -88,7 +88,7 @@ regression <- function(x) {
   sink("regressions-2020.txt", append = T)
   print("---------- Third column -----------")
   print(reg1, include.rownames=F)
-  print(reg1$N)
+  print(reg1$N, include.rownames=F)
   sink()
   rm(reg1)
   gc()
@@ -99,7 +99,7 @@ regression <- function(x) {
   sink("regressions-2020.txt", append = T)
   print("---------- Base Regression NUESTRA (Super FE, clustered Store + time) -----------")
   print(reg1, include.rownames=F)
-  print(reg1$N)
+  print(reg1$N, include.rownames=F)
   sink()
   rm(reg1)
   gc()
@@ -114,7 +114,7 @@ gc()
 sink("regressions-2020.txt", append = T)
 print("---------- RANDOM database -----------")
 sink()
-
+dfP$DVar <- as.numeric(as.character(dfP$DVar))
 regression(dfP)
 
 
@@ -126,7 +126,7 @@ gc()
 sink("regressions-2020.txt", append = T)
 print("---------- YEAR 2011 database -----------")
 sink()
-
+dfP$DVar <- as.numeric(as.character(dfP$DVar))
 regression(dfP)
 
 
@@ -136,6 +136,7 @@ regression(dfP)
 
 dfP <-  readRDS("/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff-final.rds") #ClusterUy
 dfP <- setDT(dfP)[dfP$Distance <= log(31),] # 30 kilometers
+dfP$DVar <- as.numeric(as.character(dfP$DVar))
 gc()
 
 sink("regressions-2020.txt", append = T)
@@ -149,6 +150,7 @@ regression(dfP)
 
 dfP <-  readRDS("/clusteruy/home/leandroz/Bases/Border/2020-PriceDiff-final.rds") #ClusterUy
 dfP <- setDT(dfP)[dfP$Distance > log(101),] # more than 100 kilometers
+dfP$DVar <- as.numeric(as.character(dfP$DVar))
 gc()
 
 sink("regressions-2020.txt", append = T)
@@ -185,8 +187,10 @@ print("---------- INSTRUMENT -----------")
 print("---------- Price equation (factor*time + store*time) -----------")
 print("---------- First stage -----------")
 print(summary(reg2), include.rownames=F)
+print(reg2$N, include.rownames=F)
 print("---------- Second stage -----------")
 print(reg3, include.rownames=F)
+print(reg3$N, include.rownames=F)
 sink()
 
 
@@ -212,8 +216,10 @@ sink("regressions-2020.txt", append = T)
 print("---------- Price equation (factor*time + store*time + store*product) -----------")
 print("---------- First stage -----------")
 print(summary(reg2), include.rownames=F)
+print(reg2$N, include.rownames=F)
 print("---------- Second stage -----------")
 print(reg3, include.rownames=F)
+print(reg3$N, include.rownames=F)
 sink()
 
 
@@ -249,10 +255,13 @@ print("---------- ROBUSTNESS: CHAINS -----------")
 print("---------- CHAIN Stores -----------")
 print("---------- Price equation (factor*time + store*time) -----------")
 print(reg1, include.rownames=F)
+print(reg1$N, include.rownames=F)
 print("---------- First stage -----------")
 print(summary(reg2), include.rownames=F)
+print(reg2$N, include.rownames=F)
 print("---------- Second stage -----------")
 print(reg3, include.rownames=F)
+print(reg3$N, include.rownames=F)
 sink()
 
 
@@ -282,10 +291,13 @@ print("---------- ROBUSTNESS -----------")
 print("---------- NO CHAIN Stores -----------")
 print("---------- Price equation (factor*time + store*time) -----------")
 print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
 print("---------- First stage -----------")
 print(summary(reg2), include.rownames=F)
+print(reg2$N, include.rownames=F)
 print("---------- Second stage -----------")
 print(reg3, include.rownames=F)
+print(reg3$N, include.rownames=F)
 sink()
 
 
@@ -323,10 +335,13 @@ print("---------- ROBUSTNESS -----------")
 print("---------- BELOW MEDIAN SIZE -----------")
 print("---------- Price equation (factor*time + store*time) -----------")
 print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
 print("---------- First stage -----------")
 print(summary(reg2), include.rownames=F)
+print(reg2$N, include.rownames=F)
 print("---------- Second stage -----------")
 print(reg3, include.rownames=F)
+print(reg3$N, include.rownames=F)
 sink()
 
 
@@ -357,10 +372,13 @@ print("---------- ROBUSTNESS -----------")
 print("---------- ABOVE MEDIAN SIZE -----------")
 print("---------- Price equation (factor*time + store*time) -----------")
 print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
 print("---------- First stage -----------")
 print(summary(reg2), include.rownames=F)
+print(reg2$N, include.rownames=F)
 print("---------- Second stage -----------")
 print(reg3, include.rownames=F)
+print(reg3$N, include.rownames=F)
 sink()
 
 
