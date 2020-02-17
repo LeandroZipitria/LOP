@@ -14,7 +14,7 @@ library("lfe", lib.loc = .libPaths('/clusteruy/home/leandroz/R/lib')) ## Cluster
 ### Load databases
 
 dbf <- read.csv("/clusteruy/home/leandroz/Bases/Border/2020-dbase-levels-final.csv")
-#dbf <- read.csv("c://Users/leandro/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.csv")
+dbf <- read.csv("c://Users/leandro/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.csv")
 gc()
 
 
@@ -153,6 +153,65 @@ dfP <- setDT(dfP)[dfP$Distance > log(101),] # more than 100 kilometers
 dfP$DVar <- as.numeric(as.character(dfP$DVar))
 gc()
 
+# Update function to erase different city dummy 
+
+regression <- function(x) {
+  
+  sink("regressions-2020.txt", append = T)
+  print(str(x))
+  print(dim(x))
+  sink()
+  
+  #### Distance regression
+  
+  # Base regression, clustered Store + Time
+  reg1 <- summary(felm(DifPrice ~ Distance + SameChain
+                       | Product + Time | 0 | SuperL + SuperR + Time, x))
+  sink("regressions-2020.txt", append = T)
+  print("---------- First column -----------")
+  print(reg1, include.rownames=F)
+  print(reg1$N, include.rownames=F)
+  sink()
+  rm(reg1)
+  gc()
+  
+  # Absorbing store fixed effects, clustered Store + Time
+  reg1 <- summary(felm(DifPrice ~ Distance
+                       | Product + SuperL + SuperR + Time | 0 | SuperL + SuperR + Time, x))
+  sink("regressions-2020.txt", append = T)
+  print("---------- Second column -----------")
+  print(reg1, include.rownames=F)
+  print(reg1$N, include.rownames=F)
+  sink()
+  rm(reg1)
+  gc()
+  
+  #### Variety regression
+  
+  # Base regression, clustered Store + Time
+  reg1 <- summary(felm(DifPrice ~ Distance + DVar + SameChain
+                       | Product + Time | 0 | SuperL + SuperR + Time, x))
+  sink("regressions-2020.txt", append = T)
+  print("---------- Third column -----------")
+  print(reg1, include.rownames=F)
+  print(reg1$N, include.rownames=F)
+  sink()
+  rm(reg1)
+  gc()
+  
+  # Absorbing store fixed effects, clustered Store + Time
+  reg1 <- summary(felm(DifPrice ~ Distance + DVar
+                       | Product + SuperL + SuperR + Time | 0 | SuperL + SuperR + Time, x))
+  sink("regressions-2020.txt", append = T)
+  print("---------- Base Regression NUESTRA (Super FE, clustered Store + time) -----------")
+  print(reg1, include.rownames=F)
+  print(reg1$N, include.rownames=F)
+  sink()
+  rm(reg1)
+  gc()
+}
+
+
 sink("regressions-2020.txt", append = T)
 print("---------- +100 kilometers -----------")
 sink()
@@ -169,11 +228,11 @@ rm(dfP)
 ## First column
 
 # First stage
-reg2 <- felm(Variety ~ Intrument
+reg2 <- felm(Variety ~ Instrument
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbf)
 
-sel <- which(!is.na(dbf$Intrument))
+sel <- which(!is.na(dbf$Instrument))
 dbf$fittv <- NA
 dbf$fittv[sel] <- reg2$fitted.values
 
@@ -197,12 +256,12 @@ sink()
 ## Second column
 
 # First stage
-reg2 <- felm(Variety ~ Intrument
+reg2 <- felm(Variety ~ Instrument
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) 
              + as.factor(Product) * as.factor(Super) | 0 | Super + Time, dbf)
 summary(reg2)
 
-sel <- which(!is.na(dbf$Intrument))
+sel <- which(!is.na(dbf$Instrument))
 dbf$fittv <- NA
 dbf$fittv[sel] <- reg2$fitted.values
 
@@ -237,11 +296,11 @@ reg1 <- summary(felm(moda ~ Variety
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbfCh))
 
-reg2 <- felm(Variety ~ Intrument
+reg2 <- felm(Variety ~ Instrument
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbfCh) #, exactDOF = 1899148)
 
-sel <- which(!is.na(dbfCh$Intrument))
+sel <- which(!is.na(dbfCh$Instrument))
 dbfCh$fittv <- NA
 dbfCh$fittv[sel] <- reg2$fitted.values
 
@@ -272,11 +331,11 @@ reg1 <- summary(felm(moda ~ Variety
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbfNCh))
 
-reg2 <- felm(Variety ~ Intrument
+reg2 <- felm(Variety ~ Instrument
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbfNCh) #, exactDOF = 1899148)
 
-sel <- which(!is.na(dbfNCh$Intrument))
+sel <- which(!is.na(dbfNCh$Instrument))
 dbfNCh$fittv <- NA
 dbfNCh$fittv[sel] <- reg2$fitted.values
 
@@ -317,11 +376,11 @@ reg1 <- felm(moda ~ Variety
                0 | Super + Time, dbf[dbf$Super %in% medup,])
 summary(reg1)
 
-reg2 <- felm(Variety ~ Intrument
+reg2 <- felm(Variety ~ Instrument
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbf[dbf$Super %in% medup,]) 
 
-sel <- which(!is.na(dbf[dbf$Super %in% medup,]$Intrument))
+sel <- which(!is.na(dbf[dbf$Super %in% medup,]$Instrument))
 dbf$fittv <- NA
 dbf[dbf$Super %in% medup,]$fittv[sel] <- reg2$fitted.values
 
@@ -354,11 +413,11 @@ reg1 <- felm(moda ~ Variety
                0 | Super + Time, dbf[dbf$Super %in% medup,])
 summary(reg1)
 
-reg2 <- felm(Variety ~ Intrument
+reg2 <- felm(Variety ~ Instrument
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbf[dbf$Super %in% medup,]) 
 
-sel <- which(!is.na(dbf[dbf$Super %in% medup,]$Intrument))
+sel <- which(!is.na(dbf[dbf$Super %in% medup,]$Instrument))
 dbf$fittv <- NA
 dbf[dbf$Super %in% medup,]$fittv[sel] <- reg2$fitted.values
 
