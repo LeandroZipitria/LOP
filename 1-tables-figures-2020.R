@@ -47,11 +47,10 @@ gc()
 
 ## --------- Table 2 ---------
 
-#dfP <-  readRDS("c://Users/leandro/Desktop/BasesBorder/panchos_PriceDiff.rds") #ClusterUy
 # Total (column 1)
-a <- min(dfP$Distance)
-b <- median(exp(dfP$Distance-1))
-c <- max(exp(dfP$Distance-1))
+a <- min(exp(dfP$Distance)-1)
+b <- median(exp(dfP$Distance)-1)
+c <- max(exp(dfP$Distance)-1)
 
 sink("salidaV41-2020.txt", append = T)
 print("---------------------------- Table 2 --------------------------------")
