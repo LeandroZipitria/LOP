@@ -33,6 +33,42 @@ gc()
 
 # Second column
 reg1 <- felm(moda ~ Variety
+             | as.factor(Time) * as.factor(Super) + as.factor(Category) | 
+               0 | Super + Time, dbf)
+
+sink("regressions-2020.txt", append = T)
+print("---------- Price equation (category + store*time) -----------")
+print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
+sink()
+gc()
+
+# Third column
+reg1 <- felm(moda ~ Variety
+              | as.factor(Time) * as.factor(Category)  + as.factor(Super) | 
+                0 | Super + Time, dbf)
+
+sink("regressions-2020.txt", append = T)
+print("---------- Price equation (store + category*time) -----------")
+print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
+sink()
+gc()
+
+# Fourth column
+reg1 <- felm(moda ~ Variety
+             | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
+               0 | Super + Time, dbf)
+
+sink("regressions-2020.txt", append = T)
+print("---------- Price equation (factor*time + store*time) -----------")
+print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
+sink()
+gc()
+
+# Second column
+reg1 <- felm(moda ~ Variety
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbf)
 
