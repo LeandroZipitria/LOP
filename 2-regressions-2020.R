@@ -21,6 +21,17 @@ gc()
 ###### --------- Table 4 (Effect of Varieties on Prices) ---------
 
 # First column
+reg1 <- summary(felm(moda ~ Variety
+                     | as.factor(Time) + as.factor(Super) + as.factor(Category) | 
+                       0 | Super + Time, dbf))
+sink("regressions-2020.txt", append = T)
+print("---------- Price equation (time + store + category) -----------")
+print(summary(reg1), include.rownames=F)
+print(reg1$N, include.rownames=F)
+sink()
+gc()
+
+# Second column
 reg1 <- felm(moda ~ Variety
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) | 
                0 | Super + Time, dbf)
@@ -32,7 +43,7 @@ print(reg1$N, include.rownames=F)
 sink()
 gc()
 
-# Second column
+# Third column
 reg1 <- felm(moda ~ Variety
              | as.factor(Time) * as.factor(Super) + as.factor(Time) * as.factor(Category) + 
                as.factor(Product) * as.factor(Super) | 0 | Super + Time, dbf)
