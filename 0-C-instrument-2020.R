@@ -7,9 +7,9 @@ unlink(".RData") # just for the servers
 library(data.table)
 library(readxl)
 library(dplyr)
+library(here)
 
-dbase <- fread("C:/Users/leandro/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.csv", data.table = F)
-dbase <- fread("~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.csv", data.table = F)
+dbase <- fread(here::here("../../Bases/2020.Finales/2020-dbase-levels-final.csv"), data.table = F)
 head(dbase)
 
 ## Create instrument -----------------------------------
@@ -38,7 +38,7 @@ for(i in 1:n) {
 }
 
 # save database
-write.csv(dbase, "~/Dropbox/Docs/Investigacion/2016.Distance and quality/Bases/2020.Finales/2020-dbase-levels-final.csv", row.names = FALSE)
+write.csv(dbase, here::here("../../Bases/2020.Finales/2020-dbase-levels-final.csv"), row.names = FALSE)
 
 
 ## Call next script
