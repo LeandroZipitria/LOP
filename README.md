@@ -20,4 +20,6 @@ The first four files create the databases (in levels and differences) and are ne
 1-tables-figures-2020.R: create all tables and figures. \
 2-regressions-2020-v43.R: run all regressions.
 
+Finally, Tables-10-11-latex.R create the tables based on the information collected in the code 1-tables-figures-2020.R
+
 ---------------------
