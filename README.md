@@ -12,14 +12,12 @@ The first four files create the databases (in levels and differences) and are ne
 
 0-A-create-databases-2020.R: merge price database with product and store information.\
 0-B-difference-database-2020.R: create price difference database. \
-0-C-instrument-2020.R: calculate the instrument for the price level database. \
-0-D-add-instrument-pdiff-database.R: add the instrument for the price difference database.
 
 --------------------- 
 
 ## Tables and estimations
 
 1-tables-figures-2020.R: create all tables and figures. \
-2-regressions-2020.R: run all regressions.
+2-regressions-2020-v43.R: run all regressions.
 
 ---------------------
