@@ -138,29 +138,31 @@ dim(dfP)
 
 ### Transform variables using as.factor()
 dfP$SameChain <- ifelse(dfP$ChainR == dfP$ChainL, 1,0)
-dfP$Product <- as.factor(dfP$Product)
+dfP <- setDT(dfP)[, Product:= as.factor(Product)]
 ### Transfrom from character to numeric
-dfP$CityL <- as.numeric(as.character(dfP$CityL))
-dfP$CityR <- as.numeric(as.character(dfP$CityR))
-dfP$DptoL <- as.numeric(as.character(dfP$DptoL))
-dfP$DptoR <- as.numeric(as.character(dfP$DptoR))
-dfP$ChainL <- as.numeric(as.character(dfP$ChainL))
-dfP$ChainR <- as.numeric(as.character(dfP$ChainR))
-dfP$SuperL <- as.numeric(as.character(dfP$SuperL))
-dfP$SuperR <- as.numeric(as.character(dfP$SuperR))
+gc()
+dfP <- setDT(dfP)[, CityL:= as.factor(as.character(CityL))]
+gc()
+dfP <- setDT(dfP)[, CityR:= as.factor(as.character(CityR))]
+gc()
+dfP <- setDT(dfP)[, DifCity:= ifelse(as.numeric(as.factor(CityL)) == 
+                                       as.numeric(as.factor(CityR)), 0,1)]
+dfP <- setDT(dfP)[, DifCity:= as.factor(DifCity)]
+gc()
+dfP <- setDT(dfP)[, ChainL:= as.factor(as.character(ChainL))]
+gc()
+dfP <- setDT(dfP)[, ChainR:= as.factor(as.character(ChainR))]
+gc()
+dfP <- setDT(dfP)[, SuperL:= as.factor(as.character(SuperL))]
+gc()
+dfP <- setDT(dfP)[, SuperR:= as.factor(as.character(SuperR))]
 
-dfP$CityL <- as.factor(dfP$CityL)
-dfP$CityR <- as.factor(dfP$CityR)
-dfP$ChainL <- as.factor(dfP$ChainL)
-dfP$ChainR <- as.factor(dfP$ChainR)
-dfP$SuperL <- as.factor(dfP$SuperL)
-dfP$SuperR <- as.factor(dfP$SuperR)
 
 ## Save database
 saveRDS(dfP, file = "/clusteruy/home/leandroz/Bases/Border/2018_PriceDiff.rds")
 
 
 ## Call next script
-source("/path/to/file/3-instrument-2020.R")
+source("/path/to/file/0-C-instrument-2020.R")
 
 #### End of script ---------------------------------------
