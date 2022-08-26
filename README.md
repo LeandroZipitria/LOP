@@ -21,7 +21,7 @@ The first four files create the databases (in levels and differences) and are ne
 Tables-10-11-latex.R create the tables based on the information collected in the code 
 
 **Correlation Regressions**: \
-chp4-regressions.R: run regressions for Chapter 4.\
+chp4-regressions.R: run regressions for Chapter 4. \
 
 **Causality**: \
 chp5-database.R: Create the causality database. \
