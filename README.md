@@ -10,7 +10,7 @@ This repository provides all files to create the database on price differences, 
 
 The first four files create the databases (in levels and differences) and are needed for the analysis. \
 
-0-A-create-databases.R: merge price database with product and store information.\
+0-A-create-databases.R: merge price database with product and store information. \
 0-B-difference-database.R: create price difference database. \
 
 --------------------- 
