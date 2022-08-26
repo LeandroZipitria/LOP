@@ -17,15 +17,15 @@ The first four files create the databases (in levels and differences) and are ne
 
 ## Tables and estimations
 
-1-tables-figures-2020.R: create all tables and figures. \
-Tables-10-11-latex.R create the tables based on the information collected in the code 1-tables-figures-2020.R \
+1-tables-figures.R.: create all tables and figures. \
+Tables-10-11-latex.R create the tables based on the information collected in the code 
 
 **Correlation Regressions**: \
-2-regressions-chp4: run all regressions.\
+chp4-regressions.R: run regressions for Chapter 4.\
 
 **Causality**: \
-First, create the database: chp5-database.R \
-Regressions and figures: chp5-figures-regressions.R
+chp5-database.R: Create the causality database. \
+chp5-figures-regressions.R: Regressions and figures for Chapter 5. 
 
 
 ---------------------
